@@ -61,6 +61,24 @@ impl CardValue {
         }
     }
 
+    pub fn next(&self) -> CardValue {
+        if let CardValue::King = self {
+            CardValue::Ace
+        } else {
+            let index = self.index();
+            CardValue::from_index(index + 1)
+        }
+    }
+
+    pub fn prev(&self) -> CardValue {
+        if let CardValue::Ace = self {
+            CardValue::King
+        } else {
+            let index = self.index();
+            CardValue::from_index(index - 1)
+        }
+    }
+
     pub fn iter() -> std::vec::IntoIter<CardValue> {
         let mut v = vec![];
         for i in 0..NUM_CARD_VALUES {
