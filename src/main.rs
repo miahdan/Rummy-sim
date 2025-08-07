@@ -130,6 +130,63 @@ fn print_test_possible_plays2() {
     }
 }
 
+fn print_test_possible_plays3() {
+    use CardSuit::*;
+
+    let hand = CardSet::from_vec(&make_cards(vec![
+        (0, Hearts),
+        (0, Diamonds),
+
+        (0, Spades),
+        (1, Spades),
+        (2, Spades),
+        (3, Spades),
+        (4, Spades),
+        (8, Spades),
+        (9, Spades),
+        (10, Spades),
+        (11, Spades),
+        (12, Spades),
+    ]));
+
+    let discard_pile = make_cards(vec![
+        (6, Clubs),
+    ]);
+
+    let played_cards = score::PlayedCards {
+        straight_flush_played: CardSet::from_vec(&make_cards(vec![
+            (3, Clubs),
+            (4, Clubs),
+            (5, Clubs),
+
+            (7, Clubs),
+            (8, Clubs),
+            (9, Clubs),
+
+            (9, Hearts),
+            (10, Hearts),
+            (11, Hearts),
+            (12, Hearts),
+
+            (1, Diamonds),
+            (2, Diamonds),
+            (3, Diamonds),
+
+            (5, Spades),
+            (6, Spades),
+            (7, Spades),
+        ])),
+        multiple_played: CardSet::new(),
+    };
+    
+    let plays = score::all_possible_plays(&hand, &discard_pile, &played_cards);
+
+    println!("PLAYS:");
+    for play in plays {
+        print_play(play);
+    }
+}
+
 
 
 fn main() {
@@ -144,5 +201,6 @@ fn main() {
     // will see)
     // (could also make a file input thing for testing maybe that could be neat)
     //print_test_possible_plays1();
-    print_test_possible_plays2();
+    //print_test_possible_plays2();
+    print_test_possible_plays3();
 }

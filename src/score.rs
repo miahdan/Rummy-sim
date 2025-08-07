@@ -266,7 +266,19 @@ fn generate_standalone_plays(
         let (mut set, ace_status) = play_infos.last().unwrap().clone();
 
         let card = card_of_index(extra_index);
-        set.add(&card);
+
+        // Covers the VERY SPECIFIC case where a player somehow has access to
+        // an entire straight from the first ace to the last. In this scenario,
+        // ace will have been added twice...
+        if set.contains(&card) {
+            match card.value {
+                CardValue::Ace => (),
+                _ => panic!("Non-ace card {} being added twice to a cardset {}", card, set),
+            }
+        }
+        else {
+            set.add(&card);
+        }
 
         let single_ace_status = ace_status_of_index(extra_index);
         let ace_status = ace_status.or(single_ace_status);

@@ -6,7 +6,6 @@ pub const NUM_POSSIBLE_CARDS: usize = NUM_CARD_VALUES * NUM_SUITS;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum CardValue {
-    Ace,
     King,
     Queen,
     Jack,
@@ -19,6 +18,7 @@ pub enum CardValue {
     Four,
     Three,
     Two,
+    Ace,
 }
 
 impl CardValue {
@@ -85,25 +85,6 @@ impl CardValue {
             v.push(Self::from_index(i));
         }
         v.into_iter()
-    }
-
-    // TODO how to deal with Ace's varying value?? Unsure if that will be done here
-    //
-    // POSSIBLE REPRESENTATIONS OF "PLAYED CARDS" SECITON:
-    // 1. list of "plays" each with a list of cards within them and who played them
-    // 2. map of all 52 cards to a value containing info on whether or not it's been played,
-    // and if so who played it and the type of play that occurred (same-kind, straight,
-    // or low straight which would be for ace only)
-    //
-    // I think I am leaning 2
-    //
-    //
-    fn rummy_value(&self) -> i32 {
-        match self {
-            CardValue::Ace => 3,
-            CardValue::Ten | CardValue::Jack | CardValue::Queen | CardValue::King => 2,
-            _ => 1,
-        }
     }
 }
 
@@ -238,16 +219,16 @@ impl CardSet {
     }
 
     pub fn add(&mut self, card: &Card) {
-        let res = self.set_value(card, true);
-        if let Err(()) = res {
-            panic!("Adding card {} to hand that already contains it: {}", card, self);
+        let result = self.set_value(card, true);
+        if let Err(()) = result {
+            panic!("Adding card {} to set that already contains it: {}", card, self);
         }
     }
 
     pub fn remove(&mut self, card: &Card) {
-        let res = self.set_value(card, false);
-        if let Err(()) = res {
-            panic!("Removing card {} from a hand without it: {}", card, self);
+        let result = self.set_value(card, false);
+        if let Err(()) = result {
+            panic!("Removing card {} from a set without it: {}", card, self);
         }
     }
 
@@ -297,42 +278,4 @@ impl Card {
         }
     }
 }
-*/
-
-/*
- 
- I am wholly unsure if the hash-table representation of a stack of cards yields any
- real benefits other than seeming kinda cool. Obviously all operations are O(52), but this
- is true with vectors as well since the number of possible cards in play is always bounded. 
- I think the only benefit could be if there's a table referring to every card in play in 
- the whole game (as it might prevent bugs where cards would maybe be duplicated?), but the
- cost (being extremely cumbersome) of doing that is fairly high for little reward
-
- BUT i think for players' hands, this representation is pretty neat!! Because then calculating
- things like if there are straights in your hand is really easy!! This would just be like a 
- 52-sized array of bools i guess
- So TODO make simpler hand representation struct 
- Wait what if it had
- 4 slots one per suit
- 13 slots in each suit, one per value
- to make combo-finding calculations as easy as possible
-
- MAYBE can also use something like this for the "played cards" area?
- 
-
-/// A CardStack represents a stack of cards,
-/// but using a more efficient lookup-table 
-/// representation as opposed to something 
-/// like a vector. Can represent hands,
-/// discard piles, the deck, etc. Has specialized
-/// shuffling function.
-pub struct CardStack {
-    pub map: [Option<usize>; NUM_POSSIBLE_CARDS],
-}
-
-impl CardStack {
-    pub fn shuffle(&mut self) {
-    }
-}
-
 */
